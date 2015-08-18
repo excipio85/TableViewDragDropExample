@@ -43,6 +43,7 @@ public class MainApp extends Application {
     private TableView<Animal> animalTable;
 
     private Animal draggedAnimal = null;
+    private Person addedPerson = null;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -124,11 +125,15 @@ public class MainApp extends Application {
 
         Button button = new Button("change Owner");
         button.setOnAction(event -> {
-            Person p = new Person();
-            p.setPersonId(4);
-            p.setFirstname("Firstname");
-            p.setLastname("Lastname");
-            persons.add(p);
+            addedPerson = new Person();
+            addedPerson.setPersonId(4);
+            addedPerson.setFirstname("Firstname");
+            addedPerson.setLastname("Lastname");
+            persons.add(addedPerson);
+
+            personTable.requestFocus();
+            personTable.getSelectionModel().select(addedPerson);
+
         });
 
         animalTable.setRowFactory((tableView) -> {
@@ -190,6 +195,8 @@ public class MainApp extends Application {
 
             return newRow;
         });
+
+
 
         HBox root = new HBox(10, personTable, animalTable, button);
         root.setPadding(new Insets(10d));
