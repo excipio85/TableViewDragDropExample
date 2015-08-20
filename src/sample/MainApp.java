@@ -19,6 +19,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import sample.settings.GuiUtils;
 
 import java.util.stream.Collectors;
 
@@ -47,12 +48,11 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //setUserAgentStylesheet("CASPIAN");
+        setUserAgentStylesheet("CASPIAN");
         this.primaryStage = primaryStage;
         createDummyData();
         // persons.forEach(person -> person.getAnimals().forEach(animal -> System.out.println(animal.getAnimalName())));
         initTablesAndShowApplication();
-
     }
 
     public static void main(String[] args){
@@ -123,7 +123,7 @@ public class MainApp extends Application {
 
         animalTable.getColumns().addAll(animaldIdCol, nameCol, ownerCol);
 
-        Button button = new Button("change Owner");
+        Button button = new Button("add Person");
         button.setOnAction(event -> {
             addedPerson = new Person();
             addedPerson.setPersonId(4);
@@ -133,7 +133,7 @@ public class MainApp extends Application {
 
             personTable.requestFocus();
             personTable.getSelectionModel().select(addedPerson);
-
+            GuiUtils.setAnimationActivated(Boolean.FALSE);
         });
 
         animalTable.setRowFactory((tableView) -> {
@@ -151,14 +151,15 @@ public class MainApp extends Application {
             return newRow;
         });
 
-        personTable.setRowFactory((tableView) ->{
+        personTable.setRowFactory((tableView) -> {
             TableRow<Person> newRow = new TableRow<Person>();
             newRow.setOnDragOver((event) -> {
-                if(!newRow.isEmpty()){
+                if (! newRow.isEmpty()) {
                     Dragboard dragboard = event.getDragboard();
-                    if("Animal.class".equals(dragboard.getString()) && draggedAnimal != null ){
+                    if ("Animal.class".equals(dragboard.getString()) && draggedAnimal != null) {
                         event.acceptTransferModes(TransferMode.MOVE);
-                        newRow.setStyle("-fx-background-color: cadetblue");
+                        newRow.setStyle("-fx-background-color: mediumorchid; " +
+                                "-fx-table-cell-border-color: mediumorchid; ");
                     }
                 }
             });
@@ -172,22 +173,23 @@ public class MainApp extends Application {
             });
 
             newRow.setOnDragDropped((event) -> {
-                if(!newRow.isEmpty()){
+                if (! newRow.isEmpty()) {
                     Dragboard dragboard = event.getDragboard();
-                    if("Animal.class".equals(dragboard.getString()) && newRow != null && !(newRow.getItem().getPersonId() == (draggedAnimal.getAnimalOwner().getPersonId()))){
-
-                        TranslateTransition tt = new TranslateTransition(Duration.millis(150), newRow);
-                        //tt.interpolatorProperty().set(Interpolator.EASE_BOTH);
-                        tt.setByX(-80f);
-                        tt.setCycleCount(2);
-                        tt.setAutoReverse(true);
-                        tt.play();
-
+                    if ("Animal.class".equals(dragboard.getString()) && newRow != null && ! (newRow.getItem().getPersonId() == (draggedAnimal.getAnimalOwner().getPersonId()))) {
+                        if (GuiUtils.isAnimationActivated()) {
+                            TranslateTransition tt = new TranslateTransition(Duration.millis(150), newRow);
+                            //tt.interpolatorProperty().set(Interpolator.EASE_BOTH);
+                            tt.setByX(- 80f);
+                            tt.setCycleCount(2);
+                            tt.setAutoReverse(true);
+                            tt.play();
+                        }
                         draggedAnimal.setAnimalOwner(newRow.getItem());
                         draggedAnimal = null;
                         event.setDropCompleted(true);
 
-                    }else{
+
+                    } else {
                         event.setDropCompleted(false);
                     }
                 }
@@ -196,12 +198,10 @@ public class MainApp extends Application {
             return newRow;
         });
 
-
-
         HBox root = new HBox(10, personTable, animalTable, button);
         root.setPadding(new Insets(10d));
         Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
-            primaryStage.show();
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 }
