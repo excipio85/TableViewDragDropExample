@@ -19,7 +19,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import sample.settings.GuiUtils;
+import settings.GuiUtils;
 
 import java.util.stream.Collectors;
 

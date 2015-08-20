@@ -1,4 +1,4 @@
-package sample.settings;
+package settings;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -6,10 +6,12 @@ import javafx.beans.property.SimpleBooleanProperty;
 /**
  * Created by Joachim on 20.08.2015.
  */
-public class GuiUtils {
+public final class GuiUtils {
 
+    // no instance of this class can be created
     private GuiUtils(){}
 
+    //region Animation
     private static BooleanProperty animationActivated = new SimpleBooleanProperty(Boolean.TRUE);
 
     public static boolean isAnimationActivated(){
@@ -19,4 +21,6 @@ public class GuiUtils {
     public static void setAnimationActivated(boolean isAnimationActivated){
         animationActivated.set(isAnimationActivated);
     }
+    //endregion
+
 }
